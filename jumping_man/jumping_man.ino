@@ -25,7 +25,6 @@ static unsigned char cloud[] = {0xc0, 0x01, 0xec, 0x03, 0xfe, 0x3b, 0xff, 0x7F};
 /* Constructor */
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);
 
-/* u8g2.begin() is required and will sent the setup/init sequence to the display */
 void setup(void) {
   pinMode(buttonPin, INPUT_PULLUP);
   u8g2.begin();
@@ -42,7 +41,6 @@ void reset(void) {
   points = 0;
   }
 
-/* draw something on the display with the `firstPage()`/`nextPage()` loop*/
 void loop(void) {
   u8g2.clearBuffer();
   u8g2.drawXBM(x, y, 8, 4, smile);
@@ -54,10 +52,14 @@ void loop(void) {
   String(points).toCharArray(score, 10);
   u8g2.drawStr(100,20,score);
   u8g2.sendBuffer();
-  if (x+8>=tree_x+3 && x<=tree_x+8 && y >= MAX_Y - smile_h) {
+  if (x+8>=tree_x+3 && x<=tree_x+5 && y >= MAX_Y - smile_h) {
       u8g2.drawStr(5,40,"Game Over!");
       u8g2.sendBuffer();
-      delay(1000);
+      for (int i=0; i<10; i++) {
+        tone(speakerPin, 1000-pow(1.25, i)*100);
+        delay(50*pow(1.25, i));
+      }
+      noTone(speakerPin);
       reset();
     }
   y = y + dy;
@@ -75,8 +77,6 @@ void loop(void) {
           dy = -10;
         }
       }
-  /*if (y > MAX_Y-4) dy = -V;
-  if (y <= 0) dy = V;*/
   tree_x -= 1;
   if (tree_x <= 0) {
     tree_x = 127;
