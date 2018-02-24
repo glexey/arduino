@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# pip install pyinstaller
+
+pyinstaller color_detect.py  --onefile --distpath .
